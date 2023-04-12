@@ -5,7 +5,7 @@ from etl.run_etl import run
 
 def test_integration_etl(mocker):
     mocker.patch(
-        "run_etl.generate_data",
+        "etl.run_etl.generate_data",
         return_value=[
             [
                 r
