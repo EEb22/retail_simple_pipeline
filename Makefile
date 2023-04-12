@@ -14,7 +14,7 @@ isort:
 	docker exec runner isort .
 
 pytest:
-	docker exec runner pytest /code/test
+	docker exec runner python -m pytest /code/test
 
 type:
 	docker exec runner mypy --ignore-missing-imports /code
