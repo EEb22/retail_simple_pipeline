@@ -1,0 +1,11 @@
+id,customer_id,cat,sub_cat
+1,1,Beverages,coffee/tea
+2,2,Beverages,juice
+3,3,Beverages,juice
+4,1,Dairy,cheeses
+5,2,Paper Goods,paper towels
+6,4,Beverages,coffee/tea
+7,5,Paper Goods,toilet paper
+8,3,Dairy,milk
+9,5,Dairy,Milk
+10,4,Paper Goods,toilet paper

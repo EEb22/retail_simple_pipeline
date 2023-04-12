@@ -1,0 +1,11 @@
+order_id,customer_id,first_name,last_name,state,category,sub_category
+1,1,Helen,Klein,NY,Beverages,coffee/tea
+2,2,Elina,Sims,AZ,Beverages,juice
+3,3,Robert,Williams,NY,Beverages,juice
+4,1,Helen,Klein,NY,Dairy,cheeses
+5,2,Elina,Sims,AZ,Paper Goods,paper towels
+6,4,Thomas,Barton,MI,Beverages,coffee/tea
+7,5,Rachel,Thomas,CA,Paper Goods,toilet paper
+8,3,Robert,Williams,NY,Dairy,milk
+9,5,Rachel,Thomas,CA,Dairy,Milk
+10,4,Thomas,Barton,MI,Paper Goods,toilet paper
