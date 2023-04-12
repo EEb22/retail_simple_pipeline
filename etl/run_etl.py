@@ -73,7 +73,8 @@ def transform_data(
     customer_data: List[Dict], order_data: List[Dict]
 ) -> List[Dict]:
     # enrich orders_data with customer_data and make a flat table
-    # to decrease the time complexity, a hash map has been created for customers_data
+    # to decrease the time complexity,
+    # a hash map has been created for customers_data
     # to find the customers data for the orders faster.
     customer_hash_map = {}
     for i in customer_data:
