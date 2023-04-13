@@ -1,6 +1,6 @@
 import csv
 
-from src.etl.run_etl import run
+from etl.run_etl import run
 
 
 def test_integration_etl(mocker):

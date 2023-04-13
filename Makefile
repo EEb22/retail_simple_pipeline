@@ -5,7 +5,7 @@ down:
 	docker compose down
 
 run-etl:
-    docker exec runner python src/etl/run_etl.py
+	docker exec runner python /code/etl/run_etl.py
 
 shell:
 	docker exec -ti runner bash

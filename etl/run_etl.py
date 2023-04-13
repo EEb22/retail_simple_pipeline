@@ -1,8 +1,7 @@
 import random
 from typing import Dict, List, Optional
 
-from faker import Faker
-
+import psycopg2.extras as p
 from constants import (
     categories,
     default_num_of_customers,
@@ -10,10 +9,9 @@ from constants import (
     states,
     sub_categories,
 )
-from src.etl.utils.config import get_warehouse_creds
-from src.etl.utils.db import WarehouseConnection
-
-import psycopg2.extras as p
+from faker import Faker
+from utils.config import get_warehouse_creds
+from utils.db import WarehouseConnection
 
 
 def generate_customers_data(
@@ -131,12 +129,10 @@ def _flat_data_insert_query() -> str:
     """
 
 
-
 def load_data_to_warehouse(data_to_insert: List[Dict]) -> None:
     insert_query = _flat_data_insert_query()
     with WarehouseConnection(get_warehouse_creds()).managed_cursor() as curr:
         p.execute_batch(curr, insert_query, data_to_insert)
-
 
 
 def run():
@@ -144,8 +140,7 @@ def run():
     # num_customers = #default_num_of_customers
     customers_data, orders_data = extract_data()
     flat_order = transform_data(customers_data, orders_data)
-    # load_data_to_warehouse(flat_order)
-    return flat_order
+    load_data_to_warehouse(flat_order)
 
 
 if __name__ == '__main__':
