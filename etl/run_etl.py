@@ -112,17 +112,17 @@ def _flat_data_insert_query() -> str:
         sub_category
     )
     VALUES (
-        %s,
-        %s,
-        %s,
-        %s,
-        %s,
-        %s,
-        %s
+        %(order_id)s,
+        %(customer_id)s,
+        %(first_name)s,
+        %(last_name)s,
+        %(state)s,
+        %(category)s,
+        %(sub_category)s
     )
     on conflict(order_id)
     do update set
-        (customer_id, first_name, last_name, 
+        (customer_id, first_name, last_name,
         state, category, sub_category) =
         (EXCLUDED.customer_id, EXCLUDED.first_name, EXCLUDED.last_name,
          EXCLUDED.state, EXCLUDED.category, EXCLUDED.sub_category);
@@ -130,18 +130,20 @@ def _flat_data_insert_query() -> str:
 
 
 def load_data_to_warehouse(data_to_insert: List[Dict]) -> None:
-    insert_query = _flat_data_insert_query()
     with WarehouseConnection(get_warehouse_creds()).managed_cursor() as curr:
-        p.execute_batch(curr, insert_query, data_to_insert)
+        p.execute_batch(curr, _flat_data_insert_query(), data_to_insert)
 
 
 def run():
     # num_orders = #default_num_of_orders
     # num_customers = #default_num_of_customers
+    # extract
     customers_data, orders_data = extract_data()
-    flat_order = transform_data(customers_data, orders_data)
-    load_data_to_warehouse(flat_order)
+    # transform
+    flat_data = transform_data(customers_data, orders_data)
+    # load
+    load_data_to_warehouse(flat_data)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     run()
