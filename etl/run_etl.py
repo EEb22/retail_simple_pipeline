@@ -12,6 +12,12 @@ from constants import (
 )
 
 
+import psycopg2.extras as p
+
+from utils.db import WarehouseConnection
+from utils.config import get_warehouse_creds
+
+
 def generate_customers_data(
     num_of_customers: Optional[int] = None,
 ) -> List[Dict]:
@@ -60,7 +66,7 @@ def generate_orders_data(
     return order_data
 
 
-def generate_data(
+def extract_data(
     num_of_customers: Optional[int] = None,
     num_of_orders: Optional[int] = None,
 ) -> List[List]:
@@ -69,9 +75,7 @@ def generate_data(
     return [customer_data, order_data]
 
 
-def transform_data(
-    customer_data: List[Dict], order_data: List[Dict]
-) -> List[Dict]:
+def transform_data(customer_data: List[Dict], order_data: List[Dict]) -> List[Dict]:
     # enrich orders_data with customer_data and make a flat table
     # to decrease the time complexity,
     # a hash map has been created for customers_data
@@ -86,9 +90,7 @@ def transform_data(
             {
                 "order_id": o["id"],
                 "customer_id": o["customer_id"],
-                "first_name": customer_hash_map[o["customer_id"]][
-                    "first_name"
-                ],
+                "first_name": customer_hash_map[o["customer_id"]]["first_name"],
                 "last_name": customer_hash_map[o["customer_id"]]["last_name"],
                 "state": customer_hash_map[o["customer_id"]]["state"],
                 "category": o["cat"],
@@ -98,12 +100,47 @@ def transform_data(
     return flat_data
 
 
+def _flat_data_insert_query() -> str:
+    return """
+    INSERT INTO app.flat_orders (
+        order_id,
+        customer_id,
+        first_name,
+        last_name,
+        state,
+        category,
+        sub_category
+    )
+    VALUES (
+        %s,
+        %s,
+        %s,
+        %s,
+        %s,
+        %s,
+        %s
+    )
+    on conflict(order_id)
+    do update set
+        (customer_id, first_name, last_name, 
+        state, category, sub_category) =
+        (EXCLUDED.customer_id, EXCLUDED.first_name, EXCLUDED.last_name,
+         EXCLUDED.state, EXCLUDED.category, EXCLUDED.sub_category);
+    """
+
+
+def load_data_to_warehouse(data_to_insert: List[Dict]) -> None:
+    insert_query = _flat_data_insert_query()
+    with WarehouseConnection(get_warehouse_creds()).managed_cursor() as curr:
+        p.execute_batch(curr, insert_query, data_to_insert)
+
+
 def run():
     # num_orders = #default_num_of_orders
     # num_customers = #default_num_of_customers
-    customers_data, orders_data = generate_data()
+    customers_data, orders_data = extract_data()
     flat_order = transform_data(customers_data, orders_data)
-    return flat_order
+    load_data_to_warehouse(flat_order)
 
 
 if __name__ == "__main__":

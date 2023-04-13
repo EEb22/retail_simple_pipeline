@@ -5,3 +5,4 @@ mypy
 flake8
 pytest
 pytest-mock
+psycopg2
