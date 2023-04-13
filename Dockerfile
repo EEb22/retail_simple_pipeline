@@ -1,9 +1,9 @@
 
-FROM python:3.9.5
+FROM python:3.9.6
 
 # set up location of code
 WORKDIR /code
-ENV PYTHONPATH=/code/etl
+ENV PYTHONPATH=/code/src
 
 # install python requirements
 ADD ./requirements.txt requirements.txt

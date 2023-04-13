@@ -1,7 +1,7 @@
-from constants import default_num_of_customers, default_num_of_orders
+from etl.constants import default_num_of_customers, default_num_of_orders
 from etl.run_etl import (
-    generate_customers_data,
     extract_data,
+    generate_customers_data,
     generate_orders_data,
     transform_data,
 )

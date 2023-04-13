@@ -4,7 +4,7 @@ DROP TABLE IF EXISTS app.flat_orders;
 CREATE TABLE app.flat_orders (
     order_id INT,
     customer_id INT,
-    first_name varchar(50),
+    first_name varchar(500),
 	last_name varchar(50),
 	state varchar(50),
 	category varchar(50),

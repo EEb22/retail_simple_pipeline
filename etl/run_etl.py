@@ -1,8 +1,7 @@
 import random
 from typing import Dict, List, Optional
 
-from faker import Faker
-
+import psycopg2.extras as p
 from constants import (
     categories,
     default_num_of_customers,
@@ -10,12 +9,9 @@ from constants import (
     states,
     sub_categories,
 )
-
-
-import psycopg2.extras as p
-
-from utils.db import WarehouseConnection
+from faker import Faker
 from utils.config import get_warehouse_creds
+from utils.db import WarehouseConnection
 
 
 def generate_customers_data(
@@ -75,7 +71,9 @@ def extract_data(
     return [customer_data, order_data]
 
 
-def transform_data(customer_data: List[Dict], order_data: List[Dict]) -> List[Dict]:
+def transform_data(
+    customer_data: List[Dict], order_data: List[Dict]
+) -> List[Dict]:
     # enrich orders_data with customer_data and make a flat table
     # to decrease the time complexity,
     # a hash map has been created for customers_data
@@ -90,7 +88,9 @@ def transform_data(customer_data: List[Dict], order_data: List[Dict]) -> List[Di
             {
                 "order_id": o["id"],
                 "customer_id": o["customer_id"],
-                "first_name": customer_hash_map[o["customer_id"]]["first_name"],
+                "first_name": customer_hash_map[o["customer_id"]][
+                    "first_name"
+                ],
                 "last_name": customer_hash_map[o["customer_id"]]["last_name"],
                 "state": customer_hash_map[o["customer_id"]]["state"],
                 "category": o["cat"],
@@ -143,5 +143,5 @@ def run():
     load_data_to_warehouse(flat_order)
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     run()
