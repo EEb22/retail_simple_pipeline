@@ -10,12 +10,10 @@ from constants import (
     states,
     sub_categories,
 )
-
+from src.etl.utils.config import get_warehouse_creds
+from src.etl.utils.db import WarehouseConnection
 
 import psycopg2.extras as p
-
-from utils.db import WarehouseConnection
-from utils.config import get_warehouse_creds
 
 
 def generate_customers_data(
@@ -75,7 +73,9 @@ def extract_data(
     return [customer_data, order_data]
 
 
-def transform_data(customer_data: List[Dict], order_data: List[Dict]) -> List[Dict]:
+def transform_data(
+    customer_data: List[Dict], order_data: List[Dict]
+) -> List[Dict]:
     # enrich orders_data with customer_data and make a flat table
     # to decrease the time complexity,
     # a hash map has been created for customers_data
@@ -90,7 +90,9 @@ def transform_data(customer_data: List[Dict], order_data: List[Dict]) -> List[Di
             {
                 "order_id": o["id"],
                 "customer_id": o["customer_id"],
-                "first_name": customer_hash_map[o["customer_id"]]["first_name"],
+                "first_name": customer_hash_map[o["customer_id"]][
+                    "first_name"
+                ],
                 "last_name": customer_hash_map[o["customer_id"]]["last_name"],
                 "state": customer_hash_map[o["customer_id"]]["state"],
                 "category": o["cat"],
@@ -129,10 +131,12 @@ def _flat_data_insert_query() -> str:
     """
 
 
+
 def load_data_to_warehouse(data_to_insert: List[Dict]) -> None:
     insert_query = _flat_data_insert_query()
     with WarehouseConnection(get_warehouse_creds()).managed_cursor() as curr:
         p.execute_batch(curr, insert_query, data_to_insert)
+
 
 
 def run():
@@ -140,8 +144,9 @@ def run():
     # num_customers = #default_num_of_customers
     customers_data, orders_data = extract_data()
     flat_order = transform_data(customers_data, orders_data)
-    load_data_to_warehouse(flat_order)
+    # load_data_to_warehouse(flat_order)
+    return flat_order
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     run()
