@@ -25,4 +25,4 @@ type:
 lint:
 	docker exec runner flake8 /code
 
-ci: isort format type pytest
+ci: isort format type lint pytest
