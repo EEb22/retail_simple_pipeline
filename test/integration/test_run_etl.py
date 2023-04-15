@@ -1,4 +1,5 @@
 import csv
+import datetime
 from typing import Dict, List
 
 import psycopg2.extras as p
@@ -26,7 +27,8 @@ class TestETL:
                         last_name,
                         state,
                         category,
-                        sub_category
+                        sub_category,
+                        cast(order_date as varchar)
                         FROM app.flat_orders;"""
             )
             result = [dict(r) for r in curr.fetchall()]
@@ -59,6 +61,8 @@ class TestETL:
                 open(r"test/fixtures/sample_result_data.csv")
             )
         ]
-        print(result)
-        print(expected_result)
+
+        for item in expected_result:
+            item.update({"order_date": "2021-01-01"})
+
         assert result == expected_result

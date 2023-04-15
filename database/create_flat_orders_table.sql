@@ -9,5 +9,6 @@ CREATE TABLE app.flat_orders (
 	state varchar(50),
 	category varchar(50),
 	sub_category varchar(50),
+	order_date DATE,
 	PRIMARY KEY (order_id)
 );
