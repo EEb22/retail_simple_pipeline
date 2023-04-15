@@ -1,5 +1,4 @@
 import csv
-import datetime
 from typing import Dict, List
 
 import psycopg2.extras as p
