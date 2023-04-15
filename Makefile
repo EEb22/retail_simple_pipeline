@@ -4,11 +4,14 @@ up:
 down:
 	docker compose down
 
+shell:
+	docker exec -ti runner bash
+
 run-etl:
 	docker exec runner python /code/etl/run_etl.py
 
-shell:
-	docker exec -ti runner bash
+query-warehouse:
+	docker exec -it  warehouse psql -U user online_store
 
 format:
 	docker exec runner python -m black -S --line-length 79 .
